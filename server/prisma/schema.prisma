@@ -1,0 +1,173 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User Base Model
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  password      String
+  userType      UserType
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  patient       Patient?
+  provider      MedicalProvider?
+  appointments  Appointment[]
+  medicalHistory MedicalHistory[]
+}
+
+enum UserType {
+  PATIENT
+  DOCTOR
+  GOVERNMENT
+  ADMIN
+}
+
+// Patient Model
+model Patient {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id])
+  medicalId       String    @unique
+  qrCode          String
+  dateOfBirth     DateTime
+  bloodType       String?
+  allergies       String?
+  chronicDiseases String[]
+  emergencyContact String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  appointments    Appointment[]
+  medicalHistory  MedicalHistory[]
+  donations       Donation[]
+  therapySessions TherapySession[]
+}
+
+// Medical Provider Model
+model MedicalProvider {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id])
+  licenseNumber   String    @unique
+  specialty       String
+  hospital        String?
+  city            String
+  phone           String
+  rating          Float     @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  appointments    Appointment[]
+}
+
+// Appointment Model
+model Appointment {
+  id              String    @id @default(cuid())
+  patientId       String
+  patient         Patient   @relation(fields: [patientId], references: [id])
+  providerId      String
+  provider        MedicalProvider @relation(fields: [providerId], references: [id])
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  appointmentDate DateTime
+  reason          String
+  status          String    @default("SCHEDULED")
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Medical History Model
+model MedicalHistory {
+  id              String    @id @default(cuid())
+  patientId       String
+  patient         Patient   @relation(fields: [patientId], references: [id])
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  diagnosis       String
+  medication      String
+  treatmentDate   DateTime
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Medical Device Model
+model MedicalDevice {
+  id              String    @id @default(cuid())
+  deviceName      String
+  manufacturer    String
+  serialNumber    String    @unique
+  qrCode          String    @unique
+  registrationDate DateTime  @default(now())
+  expiryDate      DateTime
+  certified       Boolean   @default(true)
+  location        String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Health Points & Donations
+model Donation {
+  id              String    @id @default(cuid())
+  patientId       String
+  patient         Patient   @relation(fields: [patientId], references: [id])
+  amount          Float
+  pointsEarned    Int
+  description     String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Therapy Services
+model TherapyService {
+  id              String    @id @default(cuid())
+  therapistName   String
+  specialty       String
+  phone           String
+  email           String
+  city            String
+  rating          Float     @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  sessions        TherapySession[]
+}
+
+model TherapySession {
+  id              String    @id @default(cuid())
+  patientId       String
+  patient         Patient   @relation(fields: [patientId], references: [id])
+  serviceId       String
+  service         TherapyService @relation(fields: [serviceId], references: [id])
+  sessionDate     DateTime
+  duration        Int       // in minutes
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Campaign Content
+model CampaignContent {
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+  contentType     String    // ARTICLE, VIDEO, IMAGE, etc.
+  platform        String    // SOCIAL_MEDIA, EMAIL, etc.
+  status          String    @default("PUBLISHED")
+  views           Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
