@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* About */}
           <div>
-            <img src="/logo.jpg" alt="Code H" className="h-10 w-auto mb-4 brightness-0 invert" />
+            <img src="/logo.jpg" alt="Code H" className="h-14 w-auto mb-4 rounded-lg bg-white p-1" />
             <p className="text-gray-400 text-sm">
               An integrated healthcare framework enhancing patient safety and efficiency across the healthcare system.
             </p>

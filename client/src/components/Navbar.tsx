@@ -25,6 +25,7 @@ const Navbar: React.FC = () => {
             <Link to="/specialists" className="text-gray-700 hover:text-blue-600 transition">Specialists</Link>
             <Link to="/therapy-services" className="text-gray-700 hover:text-blue-600 transition">Therapy</Link>
             <Link to="/donate" className="text-gray-700 hover:text-blue-600 transition">Donate</Link>
+            <Link to="/dashboard/doctor" className="text-gray-700 hover:text-blue-600 transition">Doctors</Link>
             
             {isLoggedIn ? (
               <button className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
@@ -55,6 +56,7 @@ const Navbar: React.FC = () => {
             <Link to="/specialists" className="block text-gray-700 hover:text-blue-600">Specialists</Link>
             <Link to="/therapy-services" className="block text-gray-700 hover:text-blue-600">Therapy</Link>
             <Link to="/donate" className="block text-gray-700 hover:text-blue-600">Donate</Link>
+            <Link to="/dashboard/doctor" className="block text-gray-700 hover:text-blue-600">Doctors</Link>
             <Link to="/login" className="block text-gray-700 hover:text-blue-600">Login</Link>
             <Link to="/register" className="block bg-blue-600 text-white px-4 py-2 rounded text-center">
               Register
